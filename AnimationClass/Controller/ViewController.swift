@@ -71,18 +71,20 @@ class ViewController: UIViewController {
         if !isFavoriteOpen && favoriteCollection.dataSource.characters.count >= 0 {
             favoriteHeightConstraint.constant = 83
             isFavoriteOpen = true
-            UIView.animate(withDuration: 0.5, delay: 0, options: [.curveEaseOut], animations: {
-                self.view.layoutIfNeeded()
-            }, completion: { _ in completion?() })
+            animateDrawer(open: isFavoriteOpen, completion: completion)
         } else if favoriteCollection.dataSource.characters.count == 0 {
             favoriteHeightConstraint.constant = 0
             isFavoriteOpen = false
-            UIView.animate(withDuration: 0.5, delay: 0, options: [.curveEaseIn], animations: {
-                self.view.layoutIfNeeded()
-            }, completion: { _ in completion?() })
+            animateDrawer(open: isFavoriteOpen, completion: completion)
         } else {
             completion?()
         }
+    }
+    
+    private func animateDrawer(open: Bool, completion: (() -> ())? ) {
+        UIView.animate(withDuration: 0.5, delay: 0, options: [.curveEaseInOut], animations: {
+            self.view.layoutIfNeeded()
+        }, completion: { _ in completion?() })
     }
     
     private func handleFavorite(character: Character) {
