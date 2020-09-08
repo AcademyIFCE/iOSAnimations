@@ -26,13 +26,15 @@ class FavoriteCollectionView: CharactersCollectionView {
     }
     
     func addNewCharacter(character: Character) {
-        let lastIndex = IndexPath(row: dataSource.characters.count, section: 0)
-        charsCollection.performBatchUpdates({
-            dataSource.addNew(character: character)
-            charsCollection.insertItems(at: [lastIndex])
-        }, completion: {[weak self] _ in
-            self?.charsCollection.scrollToItem(at: lastIndex, at: .centeredHorizontally, animated: true)
-        })
+        if dataSource.canAddCharacter(character: character) {
+            let lastIndex = IndexPath(row: dataSource.characters.count, section: 0)
+            charsCollection.performBatchUpdates({
+                dataSource.addNew(character: character)
+                charsCollection.insertItems(at: [lastIndex])
+            }, completion: {[weak self] _ in
+                self?.charsCollection.scrollToItem(at: lastIndex, at: .centeredHorizontally, animated: true)
+            })
+        }
     }
     
     func removeCharacter(character: Character) {

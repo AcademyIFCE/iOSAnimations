@@ -17,6 +17,10 @@ class CharactersDataSource: NSObject, UICollectionViewDataSource {
         super.init()
     }
     
+    func canAddCharacter(character: Character) -> Bool {
+        return !characters.contains(character)
+    }
+
     func addNew(character: Character) {
         if !characters.contains(character) {
             characters.append(character)
