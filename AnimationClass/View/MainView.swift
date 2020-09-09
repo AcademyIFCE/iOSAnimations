@@ -76,20 +76,9 @@ class MainView: UIView {
     }
     
     private func animateAddition(character: Character, position: CGRect, completion: (()->())?) {
-        //        UIView.animate(withDuration: 0.5, delay: 0, options: [.curveEaseIn], animations: {
-        //            image.transform = CGAffineTransform(scaleX: 2, y: 2)
-        //                .concatenating(CGAffineTransform(translationX: 0, y: -200))
-        //        }) { _ in
-        //            self.openDrawer {
-        //                self.favoriteCollection.addNewCharacter(character: character)
-        //                image.transform = .identity
-        //                image.removeFromSuperview()
-        //            }
-        //        }
+        
         // We will create a duplication that we will use for animations
         let image = UIImageView(frame: position)
-        //We have to take into account the favorite view size if open
-        if isFavoriteOpen { image.frame.origin.y += 83 }
         //Duplication configuration to be equal the original
         image.image = character.image
         self.addSubview(image)

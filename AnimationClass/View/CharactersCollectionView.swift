@@ -51,11 +51,13 @@ class CharactersCollectionView: UIView, UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let cell = collectionView.cellForItem(at: indexPath) else { return }
-        //X is the padding of 10, y is the size of the status bar + navigation + padding
-        let offset = CGPoint(x: 10, y: 98)
+        
+        //We need to translate our point from the collection to our superview
+        let pointInView = collectionView.convert(cell.frame.origin, to: superview)
+        
         var partialFrame = cell.frame
-        partialFrame.origin.x += offset.x
-        partialFrame.origin.y += offset.y
+        partialFrame.origin = pointInView
+        
         didSelect(dataSource.characters[indexPath.row], partialFrame)
     }
     

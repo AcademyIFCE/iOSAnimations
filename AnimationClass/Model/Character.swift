@@ -7,7 +7,7 @@
 //
 
 import UIKit
-
+//Needs to be equatable so we can search easily on the array
 struct Character: Equatable {
     var id = UUID()
     var image: UIImage
