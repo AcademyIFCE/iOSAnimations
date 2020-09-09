@@ -28,8 +28,8 @@ class MainView: UIView {
         super.init(frame: frame)
         self.backgroundColor = .white
         setupLayout()
-        charCollection.didSelect = handleFavorite(character:)
-        favoriteCollection.didSelect = handleUnfavorite(character:)
+        charCollection.didSelect = handleFavorite(character:position:)
+        favoriteCollection.didSelect = handleUnfavorite(character:position:)
     }
     
     private func setupLayout() {
@@ -75,7 +75,7 @@ class MainView: UIView {
         }, completion: { _ in completion?() })
     }
     
-    private func animateAddition(character: Character, completion: (()->())?) {
+    private func animateAddition(character: Character, position: CGRect, completion: (()->())?) {
         //        UIView.animate(withDuration: 0.5, delay: 0, options: [.curveEaseIn], animations: {
         //            image.transform = CGAffineTransform(scaleX: 2, y: 2)
         //                .concatenating(CGAffineTransform(translationX: 0, y: -200))
@@ -86,16 +86,23 @@ class MainView: UIView {
         //                image.removeFromSuperview()
         //            }
         //        }
-        
-        let image = UIImageView(frame: CGRect(origin: self.center, size: CGSize(width: 63, height: 83)))
+        // We will create a duplication that we will use for animations
+        let image = UIImageView(frame: position)
+        //We have to take into account the favorite view size if open
+        if isFavoriteOpen { image.frame.origin.y += 83 }
+        //Duplication configuration to be equal the original
         image.image = character.image
         self.addSubview(image)
+        
+        //Several modifications will occur simultaneously
         UIView.animateKeyframes(withDuration: 0.5, delay: 0, options: [], animations: {
             UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.7) {
                 image.transform = CGAffineTransform(scaleX: 2, y: 2)
             }
             UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.7) {
-                image.center = CGPoint(x: self.favoriteCollection.center.x, y: self.favoriteCollection.center.y + 60 )
+                var finalFrame = self.favoriteCollection.getNextItemPosition()
+                finalFrame.y += 88
+                image.frame.origin = finalFrame
             }
             UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.7) {
                 self.openDrawer(completion: nil)
@@ -104,21 +111,22 @@ class MainView: UIView {
                 image.frame.size = CGSize(width: 45, height: 59)
             }
         }, completion: { _ in
+            //At the end we have to remove the duplication and call the collection view update
             image.removeFromSuperview()
             completion?()
         })
     }
     
-    private func handleFavorite(character: Character) {
+    private func handleFavorite(character: Character, position: CGRect) {
         if favoriteCollection.dataSource.canAddCharacter(character: character) {
-            animateAddition(character: character) {
+            animateAddition(character: character, position: position) {
                 self.favoriteCollection.addNewCharacter(character: character)
             }
         }
         
     }
     
-    private func handleUnfavorite(character: Character) {
+    private func handleUnfavorite(character: Character, position: CGRect) {
         self.favoriteCollection.removeCharacter(character: character)
         openDrawer(completion: nil)
     }

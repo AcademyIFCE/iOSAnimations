@@ -21,7 +21,7 @@ class CharactersCollectionView: UIView, UICollectionViewDelegate {
     }()
     
     let dataSource: CharactersDataSource
-    var didSelect: (Character) -> () = {_ in }
+    var didSelect: (Character, CGRect) -> () = {_, _ in }
     
     init(dataSource: CharactersDataSource) {
         self.dataSource = dataSource
@@ -50,7 +50,13 @@ class CharactersCollectionView: UIView, UICollectionViewDelegate {
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        didSelect(dataSource.characters[indexPath.row])
+        guard let cell = collectionView.cellForItem(at: indexPath) else { return }
+        //X is the padding of 10, y is the size of the status bar + navigation + padding
+        let offset = CGPoint(x: 10, y: 98)
+        var partialFrame = cell.frame
+        partialFrame.origin.x += offset.x
+        partialFrame.origin.y += offset.y
+        didSelect(dataSource.characters[indexPath.row], partialFrame)
     }
     
     required init?(coder: NSCoder) {

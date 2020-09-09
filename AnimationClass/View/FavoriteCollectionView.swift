@@ -45,4 +45,11 @@ class FavoriteCollectionView: CharactersCollectionView {
             charsCollection.deleteItems(at: [removeIndex])
         })
     }
+    
+    func getNextItemPosition() -> CGPoint {
+        //First we need to get the last visible cell
+        guard let indexPath = charsCollection.indexPathsForVisibleItems.max(by: {$0.row < $1.row }), let cell = charsCollection.cellForItem(at: indexPath) else { return charsCollection.frame.origin }
+        let nextVisibleFrame = CGPoint(x: cell.frame.origin.x + 20 + 45, y: cell.frame.origin.y)
+        return nextVisibleFrame
+    }
 }
